@@ -1,0 +1,60 @@
+type Query {
+    ping: String!
+    users: [UserPayload!]!
+    user(id: Int!): UserPayload
+}
+
+type Mutation {
+    createUser(input: CreateUserInput!): UserPayload!
+    updateUser(input: UpdateUserInput!): UserPayload!
+    deleteUser(id: Int!): GenericMessage!
+}
+
+type GenericMessage{
+    message: String!
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
+}
+
+type Product {
+    id: ID!
+    name: String!
+    stock: Int!
+    price: Float!
+}
+
+type ProductLine {
+    id: ID!
+    product: Product!
+    quantity: Int!
+}
+
+type Order {
+    id: ID!
+    products: [ProductLine!]!
+    user: User!
+}
+
+input CreateUserInput{
+    name: String!
+    email: String!
+    password: String!
+}
+
+input UpdateUserInput{
+    id: ID!
+    name: String!
+    email: String!
+}
+
+type UserPayload{
+    id: ID!
+    name: String!
+    email: String!
+}
+

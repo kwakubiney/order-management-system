@@ -1,9 +1,6 @@
 package com.example.ordermanagementsystem.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,11 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "orders")
 public class Order{
     @Id
     private Long id;
     @OneToMany
     private List<ProductLine> products;
-    @OneToOne
-    private User user;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user_id;
 }
