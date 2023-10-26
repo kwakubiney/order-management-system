@@ -2,12 +2,17 @@ type Query {
     ping: String!
     users: [UserPayload!]!
     user(id: Int!): UserPayload
+    products: [ProductPayload!]!
+    product(id: Int!): ProductPayload
 }
 
 type Mutation {
     createUser(input: CreateUserInput!): UserPayload!
     updateUser(input: UpdateUserInput!): UserPayload!
     deleteUser(id: Int!): GenericMessage!
+    createProduct(input: CreateProductInput!): ProductPayload!
+    updateProduct(input: UpdateProductInput!): ProductPayload!
+    deleteProduct(input: Int!): GenericMessage!
 }
 
 type GenericMessage{
@@ -51,10 +56,29 @@ input UpdateUserInput{
     name: String!
     email: String!
 }
+input CreateProductInput{
+    name: String!
+    stock: Int!
+    price: Float!
+}
+
+input UpdateProductInput{
+    id: ID!
+    name: String!
+    stock: Int!
+    price: Float!
+}
 
 type UserPayload{
     id: ID!
     name: String!
     email: String!
+}
+
+type ProductPayload{
+    id: ID!
+    name: String!
+    stock: Int!
+    price: Float!
 }
 

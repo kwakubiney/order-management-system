@@ -22,17 +22,17 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final EntityMapper entityMapper;
     @Override
-    public UserPayload createUser(CreateUserInput payload) {
-        Optional<User> existingUser = userRepository.findUserByEmail(payload.getEmail());
+    public UserPayload createUser(CreateUserInput input) {
+        Optional<User> existingUser = userRepository.findUserByEmail(input.getEmail());
         if (existingUser.isPresent()){
-            throw new CustomGraphQLException(String.format("User with email %s already exists", payload.getEmail()), 400);
+            throw new CustomGraphQLException(String.format("User with email %s already exists", input.getEmail()), 400);
         }
-        User userToBeSaved = User.builder().email(payload.getEmail())
-                .name(payload.getName())
-                .password(payload.getPassword())
+        User userToBeSaved = User.builder().email(input.getEmail())
+                .name(input.getName())
+                .password(input.getPassword())
                 .build();
         User savedUser = userRepository.save(userToBeSaved);
-        return entityMapper.userToUserDTO(savedUser);
+        return entityMapper.userToUserPayload(savedUser);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService{
         if (existingUser.isEmpty()){
             throw new CustomGraphQLException(String.format("User with id %s does not exist", id), 404);
         }
-        return entityMapper.userToUserDTO(existingUser.get());
+        return entityMapper.userToUserPayload(existingUser.get());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService{
         }
         entityMapper.updateFields(existingUser.get(), payload);
             var updatedUser = userRepository.save(existingUser.get());
-            return entityMapper.userToUserDTO(updatedUser);
+            return entityMapper.userToUserPayload(updatedUser);
         }
 
     @Override
