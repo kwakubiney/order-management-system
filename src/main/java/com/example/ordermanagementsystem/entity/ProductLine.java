@@ -1,5 +1,6 @@
 package com.example.ordermanagementsystem.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -19,5 +20,6 @@ public class ProductLine {
     private Long id;
     @ManyToOne
     private Product product;
+    @Column(nullable = false)
     private int quantity;
 }
