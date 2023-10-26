@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserInput {
+public class UpdateProductInput {
+    private Long id;
     private String name;
-    private String email;
-    private String password;
+    private int stock;
+    private double price;
 }
