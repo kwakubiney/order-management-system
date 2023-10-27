@@ -1,4 +1,4 @@
-package com.example.ordermanagementsystem.Dto;
+package com.example.ordermanagementsystem.Payload;
 
 import com.example.ordermanagementsystem.entity.ProductLine;
 import com.example.ordermanagementsystem.entity.User;

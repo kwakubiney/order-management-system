@@ -1,8 +1,8 @@
 package com.example.ordermanagementsystem.controller;
 
-import com.example.ordermanagementsystem.Dto.GenericMessage;
-import com.example.ordermanagementsystem.Dto.OrderPayload;
-import com.example.ordermanagementsystem.Dto.ProductPayload;
+import com.example.ordermanagementsystem.Payload.GenericMessage;
+import com.example.ordermanagementsystem.Payload.OrderPayload;
+import com.example.ordermanagementsystem.Payload.ProductPayload;
 import com.example.ordermanagementsystem.input.CreateOrderInput;
 import com.example.ordermanagementsystem.input.UpdateOrderInput;
 import com.example.ordermanagementsystem.services.OrderService;

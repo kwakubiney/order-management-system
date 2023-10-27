@@ -1,8 +1,8 @@
 package com.example.ordermanagementsystem.config;
 
-import com.example.ordermanagementsystem.Dto.OrderPayload;
-import com.example.ordermanagementsystem.Dto.ProductPayload;
-import com.example.ordermanagementsystem.Dto.UserPayload;
+import com.example.ordermanagementsystem.Payload.OrderPayload;
+import com.example.ordermanagementsystem.Payload.ProductPayload;
+import com.example.ordermanagementsystem.Payload.UserPayload;
 import com.example.ordermanagementsystem.entity.Order;
 import com.example.ordermanagementsystem.entity.Product;
 import com.example.ordermanagementsystem.entity.ProductLine;

@@ -1,7 +1,7 @@
 package com.example.ordermanagementsystem.services;
 
-import com.example.ordermanagementsystem.Dto.GenericMessage;
-import com.example.ordermanagementsystem.Dto.UserPayload;
+import com.example.ordermanagementsystem.Payload.GenericMessage;
+import com.example.ordermanagementsystem.Payload.UserPayload;
 import com.example.ordermanagementsystem.input.CreateUserInput;
 import com.example.ordermanagementsystem.input.UpdateUserInput;
 
