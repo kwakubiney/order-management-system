@@ -2,8 +2,8 @@ package com.example.ordermanagementsystem.controller;
 
 import com.example.ordermanagementsystem.Dto.GenericMessage;
 import com.example.ordermanagementsystem.Dto.ProductPayload;
-import com.example.ordermanagementsystem.payload.CreateProductInput;
-import com.example.ordermanagementsystem.payload.UpdateProductInput;
+import com.example.ordermanagementsystem.input.CreateProductInput;
+import com.example.ordermanagementsystem.input.UpdateProductInput;
 import com.example.ordermanagementsystem.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

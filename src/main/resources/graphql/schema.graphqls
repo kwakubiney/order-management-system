@@ -4,6 +4,10 @@ type Query {
     user(id: Int!): UserPayload
     products: [ProductPayload!]!
     product(id: Int!): ProductPayload
+    order(id: Int!): OrderPayload
+    orders: [OrderPayload!]!
+    ordersByUserId(id: Int!): [OrderPayload!]!
+    productsByOrderId(id: Int!): [ProductPayload!]!
 }
 
 type Mutation {
@@ -13,6 +17,9 @@ type Mutation {
     createProduct(input: CreateProductInput!): ProductPayload!
     updateProduct(input: UpdateProductInput!): ProductPayload!
     deleteProduct(input: Int!): GenericMessage!
+    createOrder(input: CreateOrderInput!): OrderPayload!
+    updateOrder(input: UpdateOrderInput!): OrderPayload!
+    deleteOrder(id: Int!): GenericMessage!
 }
 
 type GenericMessage{
@@ -42,7 +49,7 @@ type ProductLine {
 type Order {
     id: ID!
     products: [ProductLine!]!
-    user: User!
+    users: User!
 }
 
 input CreateUserInput{
@@ -60,6 +67,22 @@ input CreateProductInput{
     name: String!
     stock: Int!
     price: Float!
+}
+
+input CreateOrderInput{
+    userId: ID!
+    items: [OrderItemInput!]!
+}
+
+input UpdateOrderInput{
+    userId: ID!
+    id: ID!
+    items: [OrderItemInput!]!
+}
+
+input OrderItemInput{
+    productId: ID!
+    quantity: Int!
 }
 
 input UpdateProductInput{
@@ -82,3 +105,8 @@ type ProductPayload{
     price: Float!
 }
 
+type OrderPayload{
+    id: ID!
+    products: [ProductLine!]
+    user: User!
+}

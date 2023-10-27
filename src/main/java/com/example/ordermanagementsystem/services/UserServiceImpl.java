@@ -5,10 +5,11 @@ import com.example.ordermanagementsystem.Dto.UserPayload;
 import com.example.ordermanagementsystem.config.EntityMapper;
 import com.example.ordermanagementsystem.entity.User;
 import com.example.ordermanagementsystem.exception.CustomGraphQLException;
-import com.example.ordermanagementsystem.payload.CreateUserInput;
-import com.example.ordermanagementsystem.payload.UpdateUserInput;
+import com.example.ordermanagementsystem.input.CreateUserInput;
+import com.example.ordermanagementsystem.input.UpdateUserInput;
 import com.example.ordermanagementsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
@@ -62,8 +64,8 @@ public class UserServiceImpl implements UserService{
             throw new CustomGraphQLException(String.format("User with id %s does not exist", payload.getId()), 404);
         }
         entityMapper.updateFields(existingUser.get(), payload);
-            var updatedUser = userRepository.save(existingUser.get());
-            return entityMapper.userToUserPayload(updatedUser);
+        var updatedUser = userRepository.save(existingUser.get());
+        return entityMapper.userToUserPayload(updatedUser);
         }
 
     @Override

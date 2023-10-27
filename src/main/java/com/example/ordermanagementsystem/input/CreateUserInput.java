@@ -1,4 +1,4 @@
-package com.example.ordermanagementsystem.payload;
+package com.example.ordermanagementsystem.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
