@@ -2,8 +2,8 @@ package com.example.ordermanagementsystem.services;
 
 import com.example.ordermanagementsystem.Dto.GenericMessage;
 import com.example.ordermanagementsystem.Dto.ProductPayload;
-import com.example.ordermanagementsystem.payload.CreateProductInput;
-import com.example.ordermanagementsystem.payload.UpdateProductInput;
+import com.example.ordermanagementsystem.input.CreateProductInput;
+import com.example.ordermanagementsystem.input.UpdateProductInput;
 
 
 import java.util.List;

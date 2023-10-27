@@ -1,4 +1,4 @@
-package com.example.ordermanagementsystem.payload;
+package com.example.ordermanagementsystem.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserInput {
-    private Long id;
+public class CreateProductInput {
     private String name;
-    private String email;
+    private int stock;
+    private double price;
 }

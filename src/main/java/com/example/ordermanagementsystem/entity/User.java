@@ -1,15 +1,13 @@
 package com.example.ordermanagementsystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -21,6 +19,6 @@ public class User {
     private String name;
     private String email;
     private String password;
-    @OneToMany(mappedBy = "user_id")
+    @OneToMany(mappedBy = "users")
     private List<Order> orders;
 }

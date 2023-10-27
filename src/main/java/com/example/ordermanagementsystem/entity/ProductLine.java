@@ -1,14 +1,11 @@
 package com.example.ordermanagementsystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,4 +17,7 @@ public class ProductLine {
     private Product product;
     @Column(nullable = false)
     private int quantity;
+    @JoinColumn(name="order_id")
+    @ManyToOne
+    private Order order;
 }
