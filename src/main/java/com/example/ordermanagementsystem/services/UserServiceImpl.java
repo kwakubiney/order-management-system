@@ -1,7 +1,7 @@
 package com.example.ordermanagementsystem.services;
 
-import com.example.ordermanagementsystem.Payload.GenericMessage;
-import com.example.ordermanagementsystem.Payload.UserPayload;
+import com.example.ordermanagementsystem.payload.GenericMessage;
+import com.example.ordermanagementsystem.payload.UserPayload;
 import com.example.ordermanagementsystem.config.EntityMapper;
 import com.example.ordermanagementsystem.entity.User;
 import com.example.ordermanagementsystem.exception.CustomGraphQLException;
@@ -10,10 +10,8 @@ import com.example.ordermanagementsystem.input.LoginUserInput;
 import com.example.ordermanagementsystem.input.UpdateUserInput;
 import com.example.ordermanagementsystem.repository.UserRepository;
 import com.example.ordermanagementsystem.security.TokenGenerator;
-import graphql.GraphQLException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;

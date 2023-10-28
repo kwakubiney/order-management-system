@@ -1,4 +1,4 @@
-package com.example.ordermanagementsystem.Payload;
+package com.example.ordermanagementsystem.payload;
 
 import com.example.ordermanagementsystem.entity.User;
 import lombok.Builder;

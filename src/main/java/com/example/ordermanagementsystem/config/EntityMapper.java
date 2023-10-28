@@ -1,13 +1,11 @@
 package com.example.ordermanagementsystem.config;
 
-import com.example.ordermanagementsystem.Payload.OrderPayload;
-import com.example.ordermanagementsystem.Payload.ProductPayload;
-import com.example.ordermanagementsystem.Payload.UserPayload;
+import com.example.ordermanagementsystem.payload.OrderPayload;
+import com.example.ordermanagementsystem.payload.ProductPayload;
+import com.example.ordermanagementsystem.payload.UserPayload;
 import com.example.ordermanagementsystem.entity.Order;
 import com.example.ordermanagementsystem.entity.Product;
-import com.example.ordermanagementsystem.entity.ProductLine;
 import com.example.ordermanagementsystem.entity.User;
-import com.example.ordermanagementsystem.input.UpdateOrderInput;
 import com.example.ordermanagementsystem.input.UpdateProductInput;
 import com.example.ordermanagementsystem.input.UpdateUserInput;
 import org.mapstruct.Mapper;
