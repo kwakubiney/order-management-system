@@ -1,7 +1,8 @@
 package com.example.ordermanagementsystem.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -16,7 +17,7 @@ public class Product {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private int stock;
+    private Integer stock;
     @Column(nullable = false)
-    private double price;
+    private Double price;
 }

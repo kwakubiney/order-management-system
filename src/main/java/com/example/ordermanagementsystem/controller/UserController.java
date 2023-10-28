@@ -3,6 +3,7 @@ package com.example.ordermanagementsystem.controller;
 import com.example.ordermanagementsystem.Payload.GenericMessage;
 import com.example.ordermanagementsystem.Payload.UserPayload;
 import com.example.ordermanagementsystem.input.CreateUserInput;
+import com.example.ordermanagementsystem.input.LoginUserInput;
 import com.example.ordermanagementsystem.input.UpdateUserInput;
 import com.example.ordermanagementsystem.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,10 @@ public class UserController {
     @QueryMapping
     public List<UserPayload> users() {
         return userService.users();
+    }
+
+    @QueryMapping
+    public String loginUser(@Argument(name = "input") LoginUserInput input) {
+        return userService.loginUser(input);
     }
 }

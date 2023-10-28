@@ -1,8 +1,9 @@
 package com.example.ordermanagementsystem.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -19,6 +20,17 @@ public class User {
     private String name;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @OneToMany(mappedBy = "users")
     private List<Order> orders;
+
+    public enum Role implements GrantedAuthority {
+        NORMAL,
+        ADMIN;
+        @Override
+        public String getAuthority() {
+            return "ROLE_" + this.name();
+        }
+    }
 }

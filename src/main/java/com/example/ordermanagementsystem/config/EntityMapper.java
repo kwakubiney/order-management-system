@@ -26,8 +26,7 @@ public interface EntityMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "user", source = "users")
     OrderPayload orderToOrderPayload(Order order);
-    void updateFields(@MappingTarget User user, UpdateUserInput input);
-    void updateFields(@MappingTarget Product product, UpdateProductInput input);
-    void updateFields(@MappingTarget Order order, UpdateOrderInput input);
-    void updateFields(@MappingTarget ProductLine productLine, ProductLine input);
+    User updateUserInputToUser(@MappingTarget User user, UpdateUserInput input);
+    Product productInputToProduct(@MappingTarget Product product, UpdateProductInput input);
+
 }
