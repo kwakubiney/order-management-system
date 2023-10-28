@@ -17,10 +17,12 @@ import com.example.ordermanagementsystem.repository.OrderRepository;
 import com.example.ordermanagementsystem.repository.ProductLineRepository;
 import com.example.ordermanagementsystem.repository.ProductRepository;
 import com.example.ordermanagementsystem.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductLineRepository productLineRepository;
     private final EntityMapper entityMapper;
     private final ProductService productService;
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public OrderPayload createOrder(CreateOrderInput input) {
         Optional<User> existingUser = userRepository.findUserById(input.getUserId());
@@ -65,9 +68,16 @@ public class OrderServiceImpl implements OrderService {
         return entityMapper.orderToOrderPayload(savedOrder);
     }
 
-    //TODO: Only owners of order should be allowed to update
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public OrderPayload updateOrder(UpdateOrderInput input) {
+        String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
+        //Check to see if user is allowed to delete this order
+        if (!existingUser.get().getId().equals(input.getUserId())){
+            throw new CustomGraphQLException("User is not authorized to update this order", 401);
+        }
+
         Optional<Order> existingOrder = orderRepository.findOrderById(input.getId());
         if (existingOrder.isEmpty()){
             throw new CustomGraphQLException(String.format("Order with id %s does not exist", input.getId()), 404);
@@ -90,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
                 }
         );
 
-        validateUpdateOrderInput(input);
+        validateUpdateOrderInput(input, existingProductLine);
 
         //Construct map of the resultant between new orders and existing orders
         var mapOfResultantProducts = new HashMap<Long, Integer>();
@@ -153,21 +163,23 @@ public class OrderServiceImpl implements OrderService {
                 .id(updatedOrder.getId()).build();
     }
 
-    //TODO: Only owners of order should be allowed to update
+    @Secured("ROLE_NORMAL")
     @Override
     public GenericMessage deleteOrder(Long id) {
+        String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
+
         Optional<Order> existingOrder = orderRepository.findOrderById(id);
         if (existingOrder.isEmpty()){
             throw new CustomGraphQLException(String.format("Order with id %s does not exist", id), 404);
         }
-        Map<Long, Long> productLineIdToProductId = new HashMap<>();
-        List<ProductLine> existingProductLine = existingOrder.get().getProducts();
-        Map<Product, Integer> existingProductOrderToQuantity = new HashMap<>();
-        existingProductLine.forEach(
-                (element) -> {
-                    existingProductOrderToQuantity.put(element.getProduct(), element.getQuantity());
-                }
-        );
+
+        //Check to see if user is allowed to delete this order
+        if (!existingUser.get().getId().equals(existingOrder.get().getUsers().getId())){
+            throw new CustomGraphQLException("Useer authorized to delete this order", 401);
+        }
+
+        Map<Product, Integer> existingProductOrderToQuantity = getExistingProductOrderToQuantity(id, existingOrder);
         existingProductOrderToQuantity.forEach(
                 (product, quantity) -> {
                     product.setStock(product.getStock() + quantity);
@@ -175,19 +187,40 @@ public class OrderServiceImpl implements OrderService {
                 }
         );
         orderRepository.deleteById(id);
-        //TODO: For deletion, iterate through deleted items and increase their stock
         return new GenericMessage(String.format("Order with id %s has successfully been deleted", id));
     }
 
+    private static Map<Product, Integer> getExistingProductOrderToQuantity(Long id, Optional<Order> existingOrder) {
+        if (existingOrder.isEmpty()){
+            throw new CustomGraphQLException(String.format("Order with id %s does not exist", id), 404);
+        }
+        List<ProductLine> existingProductLine = existingOrder.get().getProducts();
+        Map<Product, Integer> existingProductOrderToQuantity = new HashMap<>();
+        existingProductLine.forEach(
+                (element) -> {
+                    existingProductOrderToQuantity.put(element.getProduct(), element.getQuantity());
+                }
+        );
+        return existingProductOrderToQuantity;
+    }
+
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public OrderPayload order(Long id) {
+        String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
         Optional<Order> existingOrder = orderRepository.findOrderById(id);
         if (existingOrder.isEmpty()){
             throw new CustomGraphQLException(String.format("Order with id %s does not exist", id), 404);
         }
+        //Check to see if user is allowed to view this order
+        if (!existingUser.get().getId().equals(existingOrder.get().getUsers().getId())){
+            throw new CustomGraphQLException("User is not authorized to view this order", 401);
+        }
         return entityMapper.orderToOrderPayload(existingOrder.get());
     }
 
+    @Secured("ROLE_ADMIN")
     @Override
     public List<OrderPayload> orders() {
         return orderRepository.findAll().stream().map(
@@ -199,8 +232,18 @@ public class OrderServiceImpl implements OrderService {
         ).collect(Collectors.toList());
     }
 
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public List<OrderPayload> ordersByUserId(Long id) {
+        String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
+        if (existingUser.isEmpty()){
+            throw new CustomGraphQLException(String.format("User with id %s does not exist", id), 404);
+        }
+        //Check to see if user is allowed to view this order
+        if (!existingUser.get().getId().equals(id)){
+            throw new CustomGraphQLException("User is not authorized to view this order", 401);
+        }
         return orderRepository.findByUsers_Id(id).stream().map(
                 (order)-> OrderPayload.builder().
                         id(order.getId())
@@ -210,22 +253,43 @@ public class OrderServiceImpl implements OrderService {
         ).collect(Collectors.toList());
     }
 
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public List<ProductPayload> productsByOrderId(Long id) {
+        String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
+
         List<Product> products = new ArrayList<>();
-        orderRepository.findByUsers_Id(id).forEach(order -> {
-            List<ProductLine> orderProducts = order.getProducts();
-            for (ProductLine product : orderProducts) {
-                products.add(product.getProduct());
-            }
-        });
+        var existingOrder = orderRepository.findOrderById(id);
+        if (existingOrder.isEmpty()){
+            throw new CustomGraphQLException(String.format("Order with id %s does not exist", id), 404);
+        }
+
+        //Check to see if user is allowed to view this order
+        if (!existingUser.get().getId().equals(existingOrder.get().getUsers().getId())){
+            throw new CustomGraphQLException("User is not authorized to view this order", 401);
+        }
+
+        List<ProductLine> orderProducts = existingOrder.get().getProducts();
+        for (ProductLine product : orderProducts) {
+            products.add(product.getProduct());
+        }
         return products.stream().map(
-                entityMapper::productToProductPayload
-        ).collect(Collectors.toList());
+            entityMapper::productToProductPayload
+    ).collect(Collectors.toList());
     }
 
-    public void validateUpdateOrderInput(UpdateOrderInput input){
-        Map<Product, Integer> productToNewQuantityMap = input.getItems().stream()
+    public void validateUpdateOrderInput(UpdateOrderInput input, List<ProductLine> productLine){
+        Map<Long, Integer> existingProductToQuantity = new HashMap<>();
+
+        productLine.forEach(
+                (element) -> {
+                    existingProductToQuantity.put(element.getProduct().getId(), element.getQuantity());
+                }
+        );
+
+        Map<Product, Integer> productToNewQuantityMap;
+        productToNewQuantityMap = input.getItems().stream()
                 .collect(Collectors.toMap(
                         item -> productRepository.findProductById(item.getProductId())
                                 .orElseThrow(() -> new CustomGraphQLException(String.format("Product with id %s not found: ", item.getProductId()), 404)),
@@ -238,10 +302,13 @@ public class OrderServiceImpl implements OrderService {
             if (newQuantity <= 0) {
                 throw new CustomGraphQLException("Quantity has to be more than 0", 400);
             }
-            if (product.getStock() < newQuantity) {
-                throw new CustomGraphQLException(String.format(
-                        "Product %s does not have enough stock to fulfill the order",
-                        product.getName()), 400);
+
+            if (existingProductToQuantity.get(product.getId()) - newQuantity < 0) {
+                if ((newQuantity-existingProductToQuantity.get(product.getId()) - product.getStock() > 0)){
+                    throw new CustomGraphQLException(String.format(
+                            "Product %s does not have enough stock to fulfill the order",
+                            product.getName()), 400);
+                }
             }
         });
     }

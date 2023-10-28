@@ -23,6 +23,10 @@ public class CustomGraphQLExceptionHandler extends DataFetcherExceptionResolverA
                 errorType = ErrorType.NOT_FOUND;
                 return graphQLError(errorType, (CustomGraphQLException) ex, env);
             }
+            if(((CustomGraphQLException) ex).getStatusCode()==401){
+                errorType = ErrorType.UNAUTHORIZED;
+                return graphQLError(errorType, (CustomGraphQLException) ex, env);
+            }
             else {
                 return GraphqlErrorBuilder.newError().build();
             }

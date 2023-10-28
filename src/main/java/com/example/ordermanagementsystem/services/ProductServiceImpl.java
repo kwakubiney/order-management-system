@@ -10,6 +10,7 @@ import com.example.ordermanagementsystem.input.CreateProductInput;
 import com.example.ordermanagementsystem.input.UpdateProductInput;
 import com.example.ordermanagementsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final EntityMapper entityMapper;
+    @Secured({"ROLE_ADMIN"})
     @Override
     public ProductPayload createProduct(CreateProductInput input) {
         Optional<Product> existingProduct = productRepository.findProductByName(input.getName());
@@ -55,17 +57,19 @@ public class ProductServiceImpl implements ProductService{
         ).collect(Collectors.toList());
     }
 
+    @Secured("ROLE_ADMIN")
     @Override
     public ProductPayload updateProduct(UpdateProductInput input){
         Optional<Product> existingProduct = productRepository.findProductById(input.getId());
         if (existingProduct.isEmpty()){
             throw new CustomGraphQLException(String.format("Product with id %s does not exist", input.getId()), 404);
         }
-        entityMapper.updateFields(existingProduct.get(), input);
+        var x = entityMapper.productInputToProduct(existingProduct.get(), input);
         var updatedProduct = productRepository.save(existingProduct.get());
         return entityMapper.productToProductPayload(updatedProduct);
     }
 
+    @Secured("ROLE_ADMIN")
     @Override
     public GenericMessage deleteProduct(Long id) {
         Optional<Product> existingProduct = productRepository.findProductById(id);

@@ -16,5 +16,4 @@ public interface OrderService {
     List<OrderPayload> orders();
     List<OrderPayload> ordersByUserId(Long id);
     List<ProductPayload> productsByOrderId(Long id);
-
 }
