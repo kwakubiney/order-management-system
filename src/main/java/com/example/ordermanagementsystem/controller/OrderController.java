@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -23,13 +24,13 @@ public class OrderController{
     private final OrderService orderService;
 
     @MutationMapping
-    public OrderPayload createOrder(@Argument(name = "input") CreateOrderInput input) {
-        return orderService.createOrder(input);
+    public OrderPayload createOrder(@Argument(name = "input") CreateOrderInput input, Authentication authentication) {
+        return orderService.createOrder(input, authentication);
     }
 
     @MutationMapping
-    public OrderPayload updateOrder(@Argument(name = "input") UpdateOrderInput input) {
-        return orderService.updateOrder(input);
+    public OrderPayload updateOrder(@Argument(name = "input") UpdateOrderInput input, Authentication authentication) {
+        return orderService.updateOrder(input, authentication);
     }
 
     @MutationMapping

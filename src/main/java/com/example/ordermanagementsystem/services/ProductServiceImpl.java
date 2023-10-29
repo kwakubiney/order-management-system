@@ -11,6 +11,7 @@ import com.example.ordermanagementsystem.input.UpdateProductInput;
 import com.example.ordermanagementsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,7 +65,6 @@ public class ProductServiceImpl implements ProductService{
         if (existingProduct.isEmpty()){
             throw new CustomGraphQLException(String.format("Product with id %s does not exist", input.getId()), 404);
         }
-        var x = entityMapper.productInputToProduct(existingProduct.get(), input);
         var updatedProduct = productRepository.save(existingProduct.get());
         return entityMapper.productToProductPayload(updatedProduct);
     }
