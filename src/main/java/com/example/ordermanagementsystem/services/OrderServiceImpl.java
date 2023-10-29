@@ -43,12 +43,12 @@ public class OrderServiceImpl implements OrderService {
     public OrderPayload createOrder(CreateOrderInput input, Authentication authentication) {
         String emailFromToken = authentication.getName();
         Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
-        //Check to see if user is allowed to delete this order
+        //Check to see if user is allowed to create this order
         if (existingUser.isEmpty()){
             throw new CustomGraphQLException(String.format("User with id %s does not exist", input.getUserId()), 404);
         }
         if (!existingUser.get().getId().equals(input.getUserId())){
-            throw new CustomGraphQLException("User is not authorized to update this order", 401);
+            throw new CustomGraphQLException("User is not authorized to create this order", 401);
         }
         var productQuantityMap = validateCreateOrderInput(input);
 
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderPayload updateOrder(UpdateOrderInput input, Authentication authentication) {
         String emailFromToken = authentication.getName();
         Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
-        //Check to see if user is allowed to delete this order
+        //Check to see if user is allowed to update this order
         if (!existingUser.get().getId().equals(input.getUserId())){
             throw new CustomGraphQLException("User is not authorized to update this order", 401);
         }
@@ -182,7 +182,7 @@ public class OrderServiceImpl implements OrderService {
 
         //Check to see if user is allowed to delete this order
         if (!existingUser.get().getId().equals(existingOrder.get().getUsers().getId())){
-            throw new CustomGraphQLException("Useer authorized to delete this order", 401);
+            throw new CustomGraphQLException("User is not authorized to delete this order", 401);
         }
 
         Map<Product, Integer> existingProductOrderToQuantity = getExistingProductOrderToQuantity(id, existingOrder);
@@ -295,6 +295,7 @@ public class OrderServiceImpl implements OrderService {
         );
 
         Map<Product, Integer> productToNewQuantityMap;
+        //Check to see if any new items exist
         productToNewQuantityMap = input.getItems().stream()
                 .collect(Collectors.toMap(
                         item -> productRepository.findProductById(item.getProductId())
@@ -308,13 +309,24 @@ public class OrderServiceImpl implements OrderService {
             if (newQuantity <= 0) {
                 throw new CustomGraphQLException("Quantity has to be more than 0", 400);
             }
-
-            if (existingProductToQuantity.get(product.getId()) - newQuantity < 0) {
-                if ((newQuantity-existingProductToQuantity.get(product.getId()) - product.getStock() > 0)){
-                    throw new CustomGraphQLException(String.format(
-                            "Product %s does not have enough stock to fulfill the order",
-                            product.getName()), 400);
+            //check if the product id is in existing product to quantity map
+            if (existingProductToQuantity.containsKey(product.getId())) {
+                if (existingProductToQuantity.get(product.getId()) - newQuantity < 0) {
+                    if ((newQuantity - existingProductToQuantity.get(product.getId()) - product.getStock() > 0)) {
+                        throw new CustomGraphQLException(String.format(
+                                "Product %s does not have enough stock to fulfill the order",
+                                product.getName()), 400);
+                    }
                 }
+            }else{
+                //handling new orders that did not exist prior
+                if (productToNewQuantityMap.containsKey(product)) {
+                    if (newQuantity > product.getStock()) {
+                            throw new CustomGraphQLException(String.format(
+                                    "Product %s does not have enough stock to fulfill the order",
+                                    product.getName()), 400);
+                        }
+                    }
             }
         });
     }
