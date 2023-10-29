@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
                 .id(updatedOrder.getId()).build();
     }
 
-    @Secured("ROLE_NORMAL")
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public GenericMessage deleteOrder(Long id) {
         String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
