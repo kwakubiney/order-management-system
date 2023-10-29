@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService{
         if (existingProduct.isEmpty()){
             throw new CustomGraphQLException(String.format("Product with id %s does not exist", input.getId()), 404);
         }
-        var updatedProduct = productRepository.save(existingProduct.get());
+        var updatedProduct = productRepository.save(entityMapper.productInputToProduct(existingProduct.get(), input));
         return entityMapper.productToProductPayload(updatedProduct);
     }
 

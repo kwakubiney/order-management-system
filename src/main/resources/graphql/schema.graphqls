@@ -31,7 +31,7 @@ type Mutation {
     #[ADMIN_AUTH_REQUIRED]
     updateProduct(input: UpdateProductInput!): ProductPayload!
     #[ADMIN_AUTH_REQUIRED]
-    deleteProduct(input: Int!): GenericMessage!
+    deleteProduct(id: Int!): GenericMessage!
     #[ANY_AUTH_REQUIRED]
     createOrder(input: CreateOrderInput!): OrderPayload!
     #[ANY_AUTH_REQUIRED]
