@@ -16,11 +16,11 @@ import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
 class ProductServiceTests {
     @Mock
     private ProductRepository productRepository;

@@ -25,8 +25,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
+
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
 class OrderServiceTests {
     @Mock
     private OrderRepository orderRepository;

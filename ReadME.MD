@@ -1,5 +1,5 @@
 ### How to run
-1. Run `./gradlew build && java -jar build/libs/order-management-system.jar` to build `JAR` files.
+1. Run `./gradlew build -x test` to build `JAR` files.
 
 2. Run `docker build --build-arg JAR_FILE=build/libs/\*.jar -t order-management-system .` to build `Docker` image.
 

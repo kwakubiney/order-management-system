@@ -14,13 +14,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
 class UserServiceTests {
     @Mock
     private UserRepository userRepository;
