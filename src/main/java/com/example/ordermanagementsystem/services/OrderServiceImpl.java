@@ -19,6 +19,7 @@ import com.example.ordermanagementsystem.repository.ProductRepository;
 import com.example.ordermanagementsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +40,15 @@ public class OrderServiceImpl implements OrderService {
     private final ProductService productService;
     @Secured("IS_AUTHENTICATED_FULLY")
     @Override
-    public OrderPayload createOrder(CreateOrderInput input) {
-        Optional<User> existingUser = userRepository.findUserById(input.getUserId());
+    public OrderPayload createOrder(CreateOrderInput input, Authentication authentication) {
+        String emailFromToken = authentication.getName();
+        Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
+        //Check to see if user is allowed to delete this order
         if (existingUser.isEmpty()){
             throw new CustomGraphQLException(String.format("User with id %s does not exist", input.getUserId()), 404);
+        }
+        if (!existingUser.get().getId().equals(input.getUserId())){
+            throw new CustomGraphQLException("User is not authorized to update this order", 401);
         }
         var productQuantityMap = validateCreateOrderInput(input);
 
@@ -57,21 +63,21 @@ public class OrderServiceImpl implements OrderService {
                     .order(savedOrder)
                     .build();
             productLines.add(productLine);
-            productService.updateProduct( UpdateProductInput.builder().id(product.getId())
+            productService.updateProduct(UpdateProductInput.builder().id(product.getId())
                     .stock(product.getStock()-quantity)
                     .price(product.getPrice())
                     .name(product.getName())
                     .build());
         });
-        productLineRepository.saveAll(productLines);
-        //TODO: Handle null products response
+        var savedProductLines = productLineRepository.saveAll(productLines);
+        savedOrder.setProducts(savedProductLines);
         return entityMapper.orderToOrderPayload(savedOrder);
     }
 
     @Secured("IS_AUTHENTICATED_FULLY")
     @Override
-    public OrderPayload updateOrder(UpdateOrderInput input) {
-        String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public OrderPayload updateOrder(UpdateOrderInput input, Authentication authentication) {
+        String emailFromToken = authentication.getName();
         Optional<User> existingUser = userRepository.findUserByEmail(emailFromToken);
         //Check to see if user is allowed to delete this order
         if (!existingUser.get().getId().equals(input.getUserId())){

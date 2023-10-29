@@ -30,7 +30,7 @@ query {
 
 ### Additional API usage guidelines
 
-For clarity when reading [the schema](https://github.com/kwakubiney/order-management-system/tree/main/src/main/resources/graphql):
+For clarity when reading [the schema](https://github.com/kwakubiney/order-management-system/tree/main/src/main/resources/graphql/schema.graphqls):
 1. Endpoints annotated with ` #[ADMIN_AUTH_REQUIRED]` can only be accessed by logged in users with `ADMIN` role. 
 2. Endpoints annotated with ` #[NO_AUTH_REQUIRED]` can only be accessed without logging in.
 3.  Endpoints annotated with ` #[ANY_AUTH_REQUIRED]` can only be accessed by logged in users with either `ADMIN` or `NORMAL` role.
