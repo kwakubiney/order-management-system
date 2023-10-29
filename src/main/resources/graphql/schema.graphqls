@@ -1,25 +1,42 @@
 type Query {
-    ping: String!
+    #[ADMIN_AUTH_REQUIRED]
     users: [UserPayload!]!
+    #[ADMIN_AUTH_REQUIRED]
     user(id: Int!): UserPayload
+    #[NO_AUTH_REQUIRED]
     loginUser(input: LoginUserInput!): String!
+    #[NO_AUTH_REQUIRED]
     products: [ProductPayload!]!
+    #[NO_AUTH_REQUIRED]
     product(id: Int!): ProductPayload
+    #[ANY_AUTH_REQUIRED]
     order(id: Int!): OrderPayload
+    #[ADMIN_AUTH_REQUIRED]
     orders: [OrderPayload!]!
+    #[ANY_AUTH_REQUIRED]
     ordersByUserId(id: Int!): [OrderPayload!]!
+    #[ANY_AUTH_REQUIRED]
     productsByOrderId(id: Int!): [ProductPayload!]!
 }
 
 type Mutation {
+    #[NO_AUTH_REQUIRED]
     createUser(input: CreateUserInput!): UserPayload!
+    #[ANY_AUTH_REQUIRED]
     updateUser(input: UpdateUserInput!): UserPayload!
+    #[ANY_AUTH_REQUIRED]
     deleteUser(id: Int!): GenericMessage!
+    #[ADMIN_AUTH_REQUIRED]
     createProduct(input: CreateProductInput!): ProductPayload!
+    #[ADMIN_AUTH_REQUIRED]
     updateProduct(input: UpdateProductInput!): ProductPayload!
+    #[ADMIN_AUTH_REQUIRED]
     deleteProduct(input: Int!): GenericMessage!
+    #[ANY_AUTH_REQUIRED]
     createOrder(input: CreateOrderInput!): OrderPayload!
+    #[ANY_AUTH_REQUIRED]
     updateOrder(input: UpdateOrderInput!): OrderPayload!
+    #[ANY_AUTH_REQUIRED]
     deleteOrder(id: Int!): GenericMessage!
 }
 

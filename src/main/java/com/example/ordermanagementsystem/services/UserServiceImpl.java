@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService{
         ).collect(Collectors.toList());
     }
 
-    @Secured("ROLE_NORMAL")
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public UserPayload updateUser(UpdateUserInput payload){
         String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService{
         return entityMapper.userToUserPayload(updatedUser);
         }
 
-    @Secured("ROLE_NORMAL")
+    @Secured("IS_AUTHENTICATED_FULLY")
     @Override
     public GenericMessage deleteUser(Long id) {
         String emailFromToken = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
