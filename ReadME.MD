@@ -1,27 +1,41 @@
-### How to run
-1. Run `./gradlew build -x test` to build `JAR` files.
+### Demo
+You can view a [demo](https://www.loom.com/share/99a3bd4719f34863a318b616e52ee10f) of some features here.
 
-2. Run `docker build --build-arg JAR_FILE=build/libs/\*.jar -t order-management-system .` to build `Docker` image.
+### How to run on your machine
+
+1. Clone the project.
+
+2. Run `docker build -t order-management-system .` to build `Docker` image.
 
 3. Run `docker run -p 8080:8080 order-management-system` to run server.
 
+
 ### API usage
 
-All the GraphQL API is exposed in `/graphql`. 
+All the GraphQL API endpoints are exposed in `/graphql`. 
 Some endpoints require `JWT` token and a particular role for authorization.
 
 1. Create a user with the following example graphQL body:
 ```graphql
 mutation {
-    createUser(input: {name: "admin", password: "admin", email: "kwakubiney@gmail.com", role: ADMIN})
+    createUser(input:{
+        name: "admin"
+        email:"kwakubiney@gmail.com"
+        password:"admin"
+        role: ADMIN
+    }){
+        email
+        role
+        name
+    }
 }
-
 ```   
 
 2. Login using the following example graphQL body:
 ```graphql
 query {
-    loginUser(input: {password: "admin", email: "kwakubiney@gmail.com"})
+    loginUser(input: {password: "admin", 
+        email: "kwakubiney@gmail.com"})
 }
 ```   
 
